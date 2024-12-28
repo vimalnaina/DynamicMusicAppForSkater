@@ -1,0 +1,64 @@
+server:
+  port: 44433
+  ssl:
+    key-store: classpath:keystore.jks
+    key-store-password: 123456
+    key-password: 123456
+  address: 0.0.0.0
+
+spring:
+  profiles:
+    # Now using the dev environment
+    active: dev
+  datasource:
+    druid:
+      # Can change the parameter depend on different environment
+      driver-class-name: ${capstone.datasource.driver-class-name}
+      url: jdbc:mysql://${capstone.datasource.host}:${capstone.datasource.port}/${capstone.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${capstone.datasource.username}
+      password: ${capstone.datasource.password}
+  servlet:
+    multipart:
+      max-file-size: 10MB  # maximum upload file size
+      max-request-size: 10MB  # maximum request size
+  redis:
+    host: ${capstone.redis.host}
+    port: ${capstone.redis.port}
+    #username: ${capstone.redis.username}
+    #password: ${capstone.redis.password}
+    database: ${capstone.redis.database}
+  kafka:
+    bootstrap-servers: ${capstone.kafka.bootstrap-servers}
+    producer:
+      acks: ${capstone.kafka.producer.acks}
+      retries: ${capstone.kafka.producer.retries}
+      key-serializer: ${capstone.kafka.producer.key-serializer}
+      value-serializer: ${capstone.kafka.producer.value-serializer}
+    consumer:
+      group-id: ${capstone.kafka.consumer.group-id}
+      enable-auto-commit: ${capstone.kafka.consumer.enable-auto-commit}
+      auto-offset-reset: ${capstone.kafka.consumer.auto-offset-reset}
+      key-deserializer: ${capstone.kafka.consumer.key-deserializer}
+      value-deserializer: ${capstone.kafka.consumer.value-deserializer}
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.json.value.default.type: com.capstone.entity.ChunkMessage
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.type.mapping: 'com.capstone.entity.SongChunkMessage:com.capstone.entity.ChunkMessage'
+    listener:
+      ack-mode: ${capstone.kafka.listener.ack-mode}
+
+
+mybatis:
+  #mapper config doc
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.capstone.entity
+  configuration:
+    #open camel case name
+    map-underscore-to-camel-case: true
+
+capstone:
+  jwt:
+    admin-secret-key: capstone
+    admin-ttl: 7200000
+    admin-token-name: token

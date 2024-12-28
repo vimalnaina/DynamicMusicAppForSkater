@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.capstone.mapper.KafkaMapper">
+
+
+    <select id="getListById" resultType="com.capstone.entity.Song">
+        select capstone.song.*
+        from songlist_song
+        join song on songlist_song.song_id = song.id
+        where songlist_song.songlist_id = #{id}
+    </select>
+    <select id="getListInfo" resultType="com.capstone.entity.SongList">
+        select capstone.songlist.*
+        from songlist
+        where songlist_id = #{id}
+    </select>
+</mapper>

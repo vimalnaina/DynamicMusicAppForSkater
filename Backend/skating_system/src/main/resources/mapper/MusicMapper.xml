@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.capstone.mapper.MusicMapper">
+
+
+    <insert id="uploadMusic">
+        insert into capstone.song (id, singer,name,duration,difficultyLevel,song_id,create_time,create_userId, image_id)
+        values (#{id}, #{singer},#{name},#{duration},#{difficultyLevel},#{songId},#{createTime},#{createUserId}, #{imageId})
+    </insert>
+
+    <select id="getSongsByUserId" resultType="com.capstone.entity.Song">
+        SELECT song.*
+        FROM songlist
+        JOIN songlist_song ON songlist.songlist_id = songlist_song.songlist_id
+        JOIN song ON songlist_song.song_id = song.id
+        WHERE songlist.user_id = #{userId}
+    </select>
+
+    <select id="getListInfoByUserId" resultType="com.capstone.entity.SongList">
+        SELECT *
+        FROM songlist
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+
+</mapper>

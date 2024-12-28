@@ -1,0 +1,30 @@
+capstone:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: mysql
+    port: 3306
+    database: capstone
+    username: root
+    #password: 13803535272Byh
+    password: root
+  redis:
+    host: redis
+    port: 6379
+    #username: group5
+    #password: 123456
+    database: 0
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      acks: 1
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: group5Test
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+    listener:
+      ack-mode: manual_immediate

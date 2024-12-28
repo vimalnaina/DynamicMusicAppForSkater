@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.capstone.mapper.ReservationMapper">
+
+
+    <select id="getBookedTimeSlots" resultType="com.capstone.entity.Reservation">
+        SELECT * FROM capstone.reservation
+        WHERE date = #{date}
+    </select>
+    <select id="getReservationsByDate" resultType="com.capstone.entity.Reservation">
+        SELECT *
+        FROM reservation
+        WHERE date = #{date}
+        ORDER BY start_time;
+    </select>
+</mapper>

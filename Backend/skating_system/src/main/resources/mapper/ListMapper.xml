@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.capstone.mapper.ListMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="songlistId" keyColumn="songlist_id">
+        insert into capstone.songlist (user_id, list_name, description)
+        values (#{userId}, #{listName}, #{description})
+    </insert>
+
+    <insert id="insertRaceList" useGeneratedKeys="true" keyProperty="songlistId" keyColumn="songlist_id">
+        insert into capstone.songlist (user_id, list_name, description)
+        values (#{userId}, #{listName}, #{description})
+    </insert>
+
+    <select id="getSongsInfo" resultType="com.capstone.entity.Song">
+        select capstone.song.*
+        from songlist_song
+        join song on songlist_song.song_id = song.id
+        where songlist_song.songlist_id = #{songListId}
+    </select>
+
+
+    <select id="getSongs" resultType="com.capstone.entity.Song">
+        SELECT song.*
+        from songlist_song
+        join song on songlist_song.song_id = song.id
+        where songlist_song.songlist_id = #{songlistId}
+    </select>
+
+
+
+    <resultMap id="RaceListVOMap" type="com.capstone.vo.RaceListVO">
+        <id column="songlist_id" property="songlistId" />
+        <result column="user_id" property="userId" />
+        <result column="list_name" property="listName" />
+        <result column="description" property="description" />
+        <result column="create_time" property="createTime" />
+        <collection property="songUserPairs" ofType="com.capstone.dto.SongUserPair">
+            <result column="song_id" property="songId" />
+            <result column="performer_id" property="userId" />
+            <result column="performer_name" property="userName" />
+        </collection>
+    </resultMap>
+    <select id="getRaceListsByUserId" resultMap="RaceListVOMap">
+        SELECT sl.songlist_id, sl.user_id, sl.list_name, sl.description, sl.create_time,
+           sup.song_id, sup.performer_id, sup.performer_name
+        FROM songlist sl
+        LEFT JOIN capstone.songlist_song sup ON sl.songlist_id = sup.songlist_id
+        WHERE sl.user_id = #{userId}
+        ORDER BY sl.create_time DESC
+    </select>
+
+
+</mapper>

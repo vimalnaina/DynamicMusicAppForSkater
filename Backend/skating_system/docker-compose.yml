@@ -1,0 +1,74 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: capstone
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./Backend-dump.sql:/docker-entrypoint-initdb.d/Backend-dump.sql
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    #    image: echo5556/capstone:redis
+    #image: redis:latest
+    image: redis:7.2.6
+    container_name: redis_container
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./dump.rdb:/data/dump.rdb
+      - redis_data:/data
+
+  kafka:
+    image: bitnami/kafka:3.8
+    container_name: kafka_container
+    restart: always
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9093:9092"
+
+  zookeeper:
+    image: zookeeper:3.9.2
+    container_name: zookeeper_container
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2182:2181"
+
+  java-app:
+    image: echo5556/capstone:java-app
+    container_name: java_app_container
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+    ports:
+      - "44433:44433"
+#    environment:
+#      SPRING_PROFILES_ACTIVE: dev
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/capstone?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: 13803535272Byh
+#      REDIS_HOST: redis
+#      REDIS_PORT: 6379
+#      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+volumes:
+  mysql_data:
+  redis_data:
